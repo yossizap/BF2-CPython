@@ -31,12 +31,15 @@ add:
 
     sys.path = ['{PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7', '{PATH TO PYTHON SOURCE}/Lib', 'python', 'admin', '{YOUR MOD PATH}' ]
 
-Alternatively, if you prefer shipping your mod's server with verified pre-compiled binaries and selected libraries, you can only leave what you need and then:
+Alternatively, if you prefer shipping your mod's server with verified pre-compiled binaries and selected libraries, you should get rid of any packages that you don't need and do the following steps:
 
     cd {PATH TO PYTHON SOURCE}/Lib/
     zip -r pylib-2.7.12.zip .
     cp pylib-2.7.12.zip {SERVER DIR}
     cp -r {PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7/* {SERVER DIR}/bin/{ARCH}/pylib/
+    
+and then add the following line in the same way we added it in the previous solution:
+
     sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD PATH}', 'bin/{ARCH}/pylib/]
 
 To use the zip you will need to uncomment line 467 in Module/Setup.dist and go over the build process again.
