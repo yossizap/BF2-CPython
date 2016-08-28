@@ -4,25 +4,36 @@ This repository was created to replace DICE's py_dice.dll/.so with a newer versi
 
 This type of upgrade was [previously done](https://blog.garethj.com/2008/05/07/replacing-python-on-a-battlefield-2-server) for 2.5.2 without any changes to the interpreter's implementation but it only worked on 32bit systems. Changes were required for the 32bit and 64bit versions of the python libraries to get BF2's embedded python modules to work with the newest 2.x python interpreter.
 
-This version of the BF2 CPython adaptation was created with on a fork of the 2.7.12 stable tag and passes all the tests that 2.7.12 passes.
+This version of the BF2 CPython adaptation was created with a fork of the 2.7.12 stable tag and passed all the tests that 2.7.12 passes except for a couple of asserts that expect py2.7.12's sizes from python objects. Multiprocessing and threading works and you can add any external library that supports 2.7.12.
 
 
 ##Building and replacing libdice_py
 
-###Installation
-Linux: ./configure --enable-shared
-       make
-       cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCHITECTURE}/libdice_py.so
+###Building
+Linux: 
+    ./configure --enable-shared
+    make
+    cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCH}/libdice_py.so
 
 Windows: TODO
 
 
 ###Configuration:
 Edit {BF2 SERVER/CLIENT DIR}/python/bf2/__init__.py:
+after:
     import host
     import sys
+add:
+    sys.path = ['{PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7', '{PATH TO PYTHON SOURCE}/Lib', 'python', 'admin', '{YOUR MOD PATH}' ]
 
-+   sys.path = ['{PATH TO NEW PYTHON SOURCE}/build/lib.linux-x86_64-2.7', '{PATH TO NEW PYTHON SOURCE}/Lib', 'python', 'admin', '{YOUR MOD PATH}' ]
+Alternatively, if you prefer shipping your mod's server with verified pre-compiled binaries and selected libraries, you can only leave what you need and then:
+    cd {PATH TO PYTHON SOURCE}/Lib/
+    zip -r pylib-2.7.12.zip .
+    cp pylib-2.7.12.zip {SERVER DIR}
+    cp -r {PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7/* {SERVER DIR}/bin/{ARCH}/pylib/
+    sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD PATH}', 'bin/{ARCH}/pylib/]
+
+To use the zip you will need to uncomment line in 467 Module/Setup.dist, make distclean and go over the build process again.
 
 
 ##Notes
