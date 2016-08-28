@@ -77,7 +77,7 @@ whose size is determined when the object is allocated.
 /* PyObject_HEAD defines the initial segment of every PyObject. */
 #define PyObject_HEAD                   \
     _PyObject_HEAD_EXTRA                \
-    Py_ssize_t ob_refcnt;               \
+    int ob_refcnt;               \
     struct _typeobject *ob_type;
 
 #define PyObject_HEAD_INIT(type)        \
@@ -95,7 +95,7 @@ whose size is determined when the object is allocated.
  */
 #define PyObject_VAR_HEAD               \
     PyObject_HEAD                       \
-    Py_ssize_t ob_size; /* Number of items in variable part */
+    int ob_size; /* Number of items in variable part */
 #define Py_INVALID_SIZE (Py_ssize_t)-1
 
 /* Nothing is actually declared to be a PyObject, but every pointer to
@@ -324,7 +324,7 @@ typedef PyObject *(*allocfunc)(struct _typeobject *, Py_ssize_t);
 typedef struct _typeobject {
     PyObject_VAR_HEAD
     const char *tp_name; /* For printing, in format "<module>.<name>" */
-    Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
+    int tp_basicsize, tp_itemsize; /* For allocation */
 
     /* Methods to implement standard operations */
 
@@ -369,7 +369,7 @@ typedef struct _typeobject {
     richcmpfunc tp_richcompare;
 
     /* weak reference enabler */
-    Py_ssize_t tp_weaklistoffset;
+    long tp_weaklistoffset;
 
     /* Added in release 2.2 */
     /* Iterators */
@@ -384,7 +384,7 @@ typedef struct _typeobject {
     PyObject *tp_dict;
     descrgetfunc tp_descr_get;
     descrsetfunc tp_descr_set;
-    Py_ssize_t tp_dictoffset;
+    long tp_dictoffset;
     initproc tp_init;
     allocfunc tp_alloc;
     newfunc tp_new;
@@ -397,15 +397,11 @@ typedef struct _typeobject {
     PyObject *tp_weaklist;
     destructor tp_del;
 
-    /* Type attribute cache version tag. Added in version 2.6 */
-    unsigned int tp_version_tag;
-
 #ifdef COUNT_ALLOCS
     /* these must be last and never explicitly initialized */
-    Py_ssize_t tp_allocs;
-    Py_ssize_t tp_frees;
-    Py_ssize_t tp_maxalloc;
-    struct _typeobject *tp_prev;
+    int tp_allocs;
+    int tp_frees;
+    int tp_maxalloc;
     struct _typeobject *tp_next;
 #endif
 } PyTypeObject;
@@ -778,7 +774,7 @@ PyAPI_FUNC(void) _Py_AddToAllObjects(PyObject *, int force);
     } while (0)
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
- * and tp_dealloc implementatons.
+ * and tp_dealloc implementations.
  *
  * Note that "the obvious" code can be deadly:
  *
