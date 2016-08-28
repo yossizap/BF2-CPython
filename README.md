@@ -11,6 +11,8 @@ This version of the BF2 CPython adaptation was created with a fork of the 2.7.12
 
 ###Building
 Linux: 
+
+    make distclean
     ./configure --enable-shared
     make
     cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCH}/libdice_py.so
@@ -19,21 +21,25 @@ Windows: TODO
 
 
 ###Configuration:
-Edit {BF2 SERVER/CLIENT DIR}/python/bf2/__init__.py:
-after:
+Edit {BF2 SERVER/CLIENT DIR}/python/bf2/`__init__.py`:
+
+after the lines:
+
     import host
     import sys
 add:
+
     sys.path = ['{PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7', '{PATH TO PYTHON SOURCE}/Lib', 'python', 'admin', '{YOUR MOD PATH}' ]
 
 Alternatively, if you prefer shipping your mod's server with verified pre-compiled binaries and selected libraries, you can only leave what you need and then:
+
     cd {PATH TO PYTHON SOURCE}/Lib/
     zip -r pylib-2.7.12.zip .
     cp pylib-2.7.12.zip {SERVER DIR}
     cp -r {PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7/* {SERVER DIR}/bin/{ARCH}/pylib/
     sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD PATH}', 'bin/{ARCH}/pylib/]
 
-To use the zip you will need to uncomment line in 467 Module/Setup.dist, make distclean and go over the build process again.
+To use the zip you will need to uncomment line 467 in Module/Setup.dist and go over the build process again.
 
 
 ##Notes
