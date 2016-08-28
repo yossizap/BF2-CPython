@@ -163,9 +163,9 @@ static int
 assign_version_tag(PyTypeObject *type)
 {
     /* NOTE: The content of this function was removed since tp_version_tag 
-     * is no longer supported. The function always returns true to avoid
+     * is no longer supported. The function always returns false to avoid
      * breaking compatability. TODO: Find a better solution. */
-    return 1;
+    return 0;
 }
 
 
