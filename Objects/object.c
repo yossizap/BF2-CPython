@@ -138,12 +138,10 @@ get_counts(void)
 void
 inc_count(PyTypeObject *tp)
 {
-    if (tp->tp_next == NULL && tp->tp_prev == NULL) {
+	if (tp->tp_allocs == 0) {
         /* first time; insert in linked list */
         if (tp->tp_next != NULL) /* sanity check */
             Py_FatalError("XXX inc_count sanity check");
-        if (type_list)
-            type_list->tp_prev = tp;
         tp->tp_next = type_list;
         /* Note that as of Python 2.2, heap-allocated type objects
          * can go away, but this code requires that they stay alive
@@ -173,13 +171,16 @@ void dec_count(PyTypeObject *tp)
     if (unlist_types_without_objects &&
         tp->tp_allocs == tp->tp_frees) {
         /* unlink the type from type_list */
-        if (tp->tp_prev)
-            tp->tp_prev->tp_next = tp->tp_next;
-        else
+        if (type_list == tp) {
             type_list = tp->tp_next;
-        if (tp->tp_next)
-            tp->tp_next->tp_prev = tp->tp_prev;
-        tp->tp_next = tp->tp_prev = NULL;
+        } else {
+            PyTypeObject *tp_prev = type_list;
+            while (tp_prev->tp_next != tp) {
+                tp_prev = tp_prev->tp_next;
+            }
+            tp_prev->tp_next = tp->tp_next;
+        }
+        tp->tp_next = NULL;
         Py_DECREF(tp);
     }
 }
