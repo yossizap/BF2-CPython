@@ -43,8 +43,8 @@ PyAPI_FUNC(int) PyModule_AddStringConstant(PyObject *, const char *, const char 
 #define PyModule_AddIntMacro(m, c) PyModule_AddIntConstant(m, #c, c)
 #define PyModule_AddStringMacro(m, c) PyModule_AddStringConstant(m, #c, c)
 
-#define PYTHON_API_VERSION 1013
-#define PYTHON_API_STRING "1013"
+#define PYTHON_API_VERSION 1012
+#define PYTHON_API_STRING "1012"
 /* The API version is maintained (independently from the Python version)
    so we can detect mismatches between the interpreter and dynamically
    loaded modules.  These are diagnosed by an error message but
