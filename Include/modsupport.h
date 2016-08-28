@@ -61,7 +61,7 @@ PyAPI_FUNC(int) PyModule_AddStringConstant(PyObject *, const char *, const char 
    22-Feb-2006  MvL	1013	PEP 353 - long indices for sequence lengths
 
    19-Aug-2002  GvR	1012	Changes to string object struct for
-   				interning changes, saving 3 bytes.
+                            interning changes, saving 3 bytes.
 
    17-Jul-2001	GvR	1011	Descr-branch, just to be on the safe side
 
@@ -96,22 +96,8 @@ PyAPI_FUNC(int) PyModule_AddStringConstant(PyObject *, const char *, const char 
    without actually needing a recompile.  */
 #endif /* MS_WINDOWS */
 
-#if SIZEOF_SIZE_T != SIZEOF_INT
-/* On a 64-bit system, rename the Py_InitModule4 so that 2.4
-   modules cannot get loaded into a 2.5 interpreter */
-#define Py_InitModule4 Py_InitModule4_64
-#endif
-
 #ifdef Py_TRACE_REFS
- /* When we are tracing reference counts, rename Py_InitModule4 so
-    modules compiled with incompatible settings will generate a
-    link-time error. */
- #if SIZEOF_SIZE_T != SIZEOF_INT
- #undef Py_InitModule4
- #define Py_InitModule4 Py_InitModule4TraceRefs_64
- #else
  #define Py_InitModule4 Py_InitModule4TraceRefs
- #endif
 #endif
 
 PyAPI_FUNC(PyObject *) Py_InitModule4(const char *name, PyMethodDef *methods,
