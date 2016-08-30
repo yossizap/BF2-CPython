@@ -375,6 +375,9 @@
     <ClInclude Include="..\Modules\_io\_iomodule.h">
       <Filter>Modules\_io</Filter>
     </ClInclude>
+    <ClInclude Include="..\Modules\socketmodule.c">
+      <Filter>Modules</Filter>
+    </ClInclude>
     <ClInclude Include="..\Objects\stringlib\count.h">
       <Filter>Objects</Filter>
     </ClInclude>

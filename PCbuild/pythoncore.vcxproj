@@ -279,6 +279,7 @@
     <ClCompile Include="..\Modules\_io\iobase.c" />
     <ClCompile Include="..\Modules\_io\stringio.c" />
     <ClCompile Include="..\Modules\_io\textio.c" />
+    <ClCompile Include="..\Modules\socketmodule.c" />
     <ClCompile Include="..\Objects\abstract.c" />
     <ClCompile Include="..\Objects\boolobject.c" />
     <ClCompile Include="..\Objects\bufferobject.c" />
