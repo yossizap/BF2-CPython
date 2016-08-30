@@ -9,24 +9,42 @@ This version of the BF2 CPython adaptation was created with a fork of the 2.7.12
 
 ##Building and replacing libdice_py
 
+###Adding external modules as builtins
+Some of the modules in `Modules/` are compiled as external libs - .pyd files. For some reason, which requires further investegation, BF2 crashes when trying to import .pyd files in windows so any external modules that you would like to include should be added as builtin modules in the python .dll.
+
+######Windows
+To include modules in windows you'll need to add their init function to `PC\config.c` and add their path to the `pythoncore.vcxproj`+`pythoncore.vcxproj.filter` files. I have already done this in the `bf2-2.7` branch for the `_socket` module since it's required by `socket.py` that bf2 uses, take a look at [c364cee](https://github.com/yossizap/BF2-CPython/commit/c364cee33a30164fc8a5f436a496279f6881734d) and [ddcf99e](https://github.com/yossizap/BF2-CPython/commit/ddcf99e3b8ea419330c8a2b690d13744abdcf633) as examples. You can also do the opposite to remove builtin modules that you don't need. 
+
+Once you're done building, run python.exe from the build folder to see if the modules that you added are accessible by executing the command `sys.builtin_module_names`.
+
 ###Building
-Linux: 
+######Linux: 
 
     make distclean
     ./configure --enable-shared
     make
     cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCH}/libdice_py.so
 
-Windows: TODO
-
-
+######Windows: 
+    
+    # Follow the instructions in `PCbuild/readme.txt` for the pre-requisites(I compiled my .dll with VS2008+VS10)
+    cd PCbuild
+    get_externals.bat
+    # You don't have to disable ssl, tkinter and bsddb but I thought that they aren't necessary for a minimal build
+    build.bat --no-ssl --no-tkinter --no-bsddb -c Release -p {Win32/x64}
+    cp python27.dll {BF2_FOLDER}/dice_py.dll
+    
 ###Configuration:
-Edit {BF2 SERVER/CLIENT DIR}/python/bf2/`__init__.py`:
+
+######Linux:
+
+Edit {BF2 SERVER DIR}/python/bf2/`__init__.py`:
 
 after the lines:
 
     import host
     import sys
+    
 add:
 
     sys.path = ['{PATH TO PYTHON SOURCE}/build/lib.linux-x86_{ARCH}-2.7', '{PATH TO PYTHON SOURCE}/Lib', 'python', 'admin', '{YOUR MOD PATH}' ]
@@ -40,15 +58,32 @@ Alternatively, if you prefer shipping your mod's server with verified pre-compil
     
 and then add the following line in the same way we added it in the previous solution:
 
-    sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD PATH}', 'bin/{ARCH}/pylib/]
+    sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD'S PATH}', 'bin/{ARCH}/pylib/]
 
-To use the zip you will need to uncomment line 467 in Module/Setup.dist and go over the build process again.
+*Note*: to use the zip you will need to uncomment line 467 in Module/Setup.dist to enable zlib compilation and go over the build process again.
+
+######Windows:
+
+Edit {BF2 DIR}/python/bf2/`__init__.py`:
+
+after the lines:
+
+    import host
+    import sys
+
+add: 
+
+    sys.path = ['pylib-2.7.12.zip', 'python', '{YOUR MOD'S PATH}', 'admin'}
+    
+Select the libs that you want to use and zip them in pylib-2.7.12.zip using your prefered win archive utility. You don't need to re-compile the .dll with zlib to use the .zip since the windows version comes with zlib as a builtin.
 
 
 ##Notes
 If you have any .pyc files in your mod directory they won't work with the new interpreter unless they were re-compiled with the version of python that matches this interpreter's version.
 
 See README.orig for the original CPython README.
+
+You can take a look at the new features since 2.3.4 at the [python manual](https://docs.python.org/2.7/whatsnew/index.html).
 
 
 ##Credits
