@@ -17,6 +17,11 @@ To include modules in windows you'll need to add their init function to `PC\conf
 
 Once you're done building, run python.exe from the build folder to see if the modules that you added are accessible by executing the command `sys.builtin_module_names`.
 
+######Linux
+It's not necessary to compile all the libraries into the linux .so since they can be dynamically loaded but it's possible. 
+To add existing modules simply find them in Modules/Setup.dist and uncomment their line.
+To add your own module all you have to do it is place it in Modules/, add it to the Setup.dist file in the `[module name] [sources] [compilation flags]` format. Alternatively, if you don't want to use additional compilation flags, you can just place your module in Modules/ and have the init function's name match init[module_name] e.g. initthread for threadmodule.c, initbf2core for bf2core.c. One of the building scripts will automatically detect this add the module into your final python .so.
+
 
 ###Building
 ######Linux: 
@@ -27,7 +32,7 @@ Once you're done building, run python.exe from the build folder to see if the mo
     cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCH}/libdice_py.so
 
 ######Windows: 
-Follow the instructions in `PCbuild/readme.txt` for the pre-requisites. I have only managed to the dll to work with the VS8+VS10 combination. Make sure that you have perl and svn and that you are using the VS8 toolchain with .NET4.
+Follow the instructions in `PCbuild/readme.txt` for the pre-requisites. I have only managed to get the dll to work with the VS8+VS10 combination. Make sure that you have perl and svn and that you are using the VS8 toolchain with .NET4.
     
     cd PCbuild
     get_externals.bat
