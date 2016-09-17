@@ -10,12 +10,13 @@ This version of the BF2 CPython adaptation was created with a fork of the 2.7.12
 ##Building and replacing libdice_py
 
 ###Adding external modules as builtins
-Some of the modules in `Modules/` are compiled as external libs - .pyd files. For some reason, which requires further investegation, BF2 crashes when trying to import .pyd files in windows so any external modules that you would like to include should be added as builtin modules in the python .dll.
+Some of the modules in `Modules/` are compiled as external libs - .pyd files. For some reason, which requires further investigation, BF2 crashes when trying to import .pyd files in windows so any external modules that you would like to include should be added as builtin modules in the python .dll.
 
 ######Windows
 To include modules in windows you'll need to add their init function to `PC\config.c` and add their path to the `pythoncore.vcxproj`+`pythoncore.vcxproj.filter` files. I have already done this in the `bf2-2.7` branch for the `_socket` module since it's required by `socket.py` that bf2 uses, take a look at [c364cee](https://github.com/yossizap/BF2-CPython/commit/c364cee33a30164fc8a5f436a496279f6881734d) and [ddcf99e](https://github.com/yossizap/BF2-CPython/commit/ddcf99e3b8ea419330c8a2b690d13744abdcf633) as examples. You can also do the opposite to remove builtin modules that you don't need. 
 
 Once you're done building, run python.exe from the build folder to see if the modules that you added are accessible by executing the command `sys.builtin_module_names`.
+
 
 ###Building
 ######Linux: 
@@ -26,14 +27,15 @@ Once you're done building, run python.exe from the build folder to see if the mo
     cp libpython2.7.so {BF2 SERVER DIR}/bin/{ARCH}/libdice_py.so
 
 ######Windows: 
+Follow the instructions in `PCbuild/readme.txt` for the pre-requisites. I have only managed to the dll to work with the VS8+VS10 combination. Make sure that you have perl and svn and that you are using the VS8 toolchain with .NET4.
     
-    # Follow the instructions in `PCbuild/readme.txt` for the pre-requisites(I compiled my .dll with VS2008+VS10)
     cd PCbuild
     get_externals.bat
-    # You don't have to disable ssl, tkinter and bsddb but I thought that they aren't necessary for a minimal build
     build.bat --no-ssl --no-tkinter --no-bsddb -c Release -p {Win32/x64}
     cp python27.dll {BF2_FOLDER}/dice_py.dll
     
+You don't have to disable ssl, tkinter and bsddb but I thought that they aren't necessary for a minimal build
+
 ###Configuration:
 
 ######Linux:
@@ -58,7 +60,7 @@ Alternatively, if you prefer shipping your mod's server with verified pre-compil
     
 and then add the following line in the same way we added it in the previous solution:
 
-    sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '{YOUR MOD'S PATH}', 'bin/{ARCH}/pylib/]
+    sys.path = ['pylib-2.7.12.zip', 'python', 'admin', '%s' % bf2.gameLogic.getModDir(), 'bin/{ARCH}/pylib/]
 
 *Note*: to use the zip you will need to uncomment line 467 in Module/Setup.dist to enable zlib compilation and go over the build process again.
 
@@ -73,9 +75,9 @@ after the lines:
 
 add: 
 
-    sys.path = ['pylib-2.7.12.zip', 'python', '{YOUR MOD'S PATH}', 'admin'}
+    sys.path = ['pylib-2.7.12.zip', 'python', '%s' % bf2.gameLogic.getModDir(), 'admin'}
     
-Select the libs that you want to use and zip them in pylib-2.7.12.zip using your prefered win archive utility. You don't need to re-compile the .dll with zlib to use the .zip since the windows version comes with zlib as a builtin.
+Select the libs that you want to use and zip them in pylib-2.7.12.zip using your preferred win archive utility. You don't need to re-compile the .dll with zlib to use the .zip since the windows version comes with zlib as a builtin.
 
 
 ##Notes
@@ -87,4 +89,4 @@ You can take a look at the new features since 2.3.4 at the [python manual](https
 
 
 ##Credits
-[pavelhoral](github.com/Pavelhoral) for fixing the incompatability of py2.7's pyobject struct with py2.3 object struct.
+[pavelhoral](github.com/Pavelhoral) for fixing the incompatibility of py2.7's pyobject struct with py2.3 object struct.
