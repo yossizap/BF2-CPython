@@ -378,6 +378,9 @@
     <ClInclude Include="..\Modules\socketmodule.c">
       <Filter>Modules</Filter>
     </ClInclude>
+    <ClInclude Include="..\Modules\selectmodule.c">
+      <Filter>Modules</Filter>
+    </ClInclude>
     <ClInclude Include="..\Objects\stringlib\count.h">
       <Filter>Objects</Filter>
     </ClInclude>
