@@ -16,6 +16,18 @@ extern char *strerror(int);
 
 #include <ctype.h>
 
+/* 
+ * This option enables the logging of ALL the exceptions created in the interpreter.
+ * It may create a giant pyerr.log file if you are abusing exceptions so use it carefully.
+ * Uncomment to use.
+ *
+#define EXCEPTION_LOGGING
+ */
+
+#ifdef EXCEPTION_LOGGING
+#include "frameobject.h"
+#endif // EXCEPTION_LOGGING
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,9 +61,59 @@ PyErr_Restore(PyObject *type, PyObject *value, PyObject *traceback)
     Py_XDECREF(oldtraceback);
 }
 
+#ifdef EXCEPTION_LOGGING
+/* A global variable holding an opened log file that the PyErr_LogException function
+ * can work with instead of re-opening the file for each exception */
+static PyObject *g_log_file = NULL;
+
+/* Writes a given exception with it's traceback into the g_log_file */
+void
+PyErr_LogException(PyObject *exception, PyObject *value)
+{
+    PyFrameObject *frame = NULL;
+    PyThreadState *tstate = NULL;
+    char* linebuf[2000];
+
+    if (NULL == g_log_file)
+    {
+        g_log_file = PyFile_FromString("pyerror.log", "a");
+        if (NULL == g_log_file)
+        {
+            printf("Failed to open errors.c exceptions log file\n");
+            return;
+        }
+    }
+
+    tstate = PyThreadState_GET();
+
+    PyFile_WriteObject(exception, g_log_file, (int)NULL);
+    PyFile_WriteString("\n", g_log_file);
+
+    if (NULL != tstate && NULL != tstate->frame) 
+    {
+        frame = tstate->frame;
+
+        while (NULL != frame) 
+        {
+            int lineno = frame->f_lineno;
+            const char *filename = PyString_AsString(frame->f_code->co_filename);
+            const char *funcname = PyString_AsString(frame->f_code->co_name);
+            PyOS_snprintf(linebuf, sizeof(linebuf), "  File \"%.500s\", line %d, in %.500s\n",
+                                                                  filename, lineno, filename);
+            PyFile_WriteString(linebuf, g_log_file);
+            frame = frame->f_back;
+        }
+    }
+}
+#endif // EXCEPTION_LOGGING
+
 void
 PyErr_SetObject(PyObject *exception, PyObject *value)
 {
+#ifdef EXCEPTION_LOGGING
+    PyErr_LogException(exception, value);
+#endif // EXCEPTION_LOGGING
+
     Py_XINCREF(exception);
     Py_XINCREF(value);
     PyErr_Restore(exception, value, (PyObject *)NULL);
@@ -62,6 +124,7 @@ PyErr_SetNone(PyObject *exception)
 {
     PyErr_SetObject(exception, (PyObject *)NULL);
 }
+
 
 void
 PyErr_SetString(PyObject *exception, const char *string)
