@@ -121,8 +121,9 @@ A socket object represents one endpoint of a network connection.\n\
 Methods of socket objects (keyword arguments not allowed):\n\
 \n\
 accept() -- accept a connection, returning new socket and client address\n\
-acceptEx(sock, addr) -- accept a connection, return an error value and\n\
-                                 fill sock and addr with a new socket and client address\n\
+acceptEx() -- accept a connection, return an error value with a new socket\n\
+                    and a client address if the error value is 0(success), otherwise\n\
+                    the socket and addr will be None\n\
 bind(addr) -- bind the socket to a local address\n\
 close() -- close the socket\n\
 connect(addr) -- connect the socket to a remote address\n\
@@ -1786,80 +1787,118 @@ connection, and the address of the client.  For IP sockets, the address\n\
 info is a pair (hostaddr, port).");
 
 /* s.acceptEx() method */
-static int
-sock_acceptEx(PySocketSockObject *s, PyObject *args)
+static PyObject *
+sock_acceptEx(PySocketSockObject *s)
 {
     sock_addr_t addrbuf;
     SOCKET_T newfd;
     socklen_t addrlen;
     PyObject *sock = NULL;
     PyObject *addr = NULL;
-    int res = -1;
+    PyObject *res = NULL;
+    int errval = -1;
     int timeout;
     
-    if (! PyArg_UnpackTuple(args, "acceptEx", 2, 2, &sock, &addr))
+    if (!getsockaddrlen(s, &addrlen))
     {
         return NULL;
     }
-
-    if (!getsockaddrlen(s, &addrlen))
-        return NULL;
     memset(&addrbuf, 0, addrlen);
 
     newfd = INVALID_SOCKET;
 
     if (!IS_SELECTABLE(s))
+    {
         return select_error();
+    }
 
     BEGIN_SELECT_LOOP(s)
     Py_BEGIN_ALLOW_THREADS
     timeout = internal_select_ex(s, 0, interval);
     if (!timeout)
+    {
         newfd = accept(s->sock_fd, SAS2SA(&addrbuf), &addrlen);
+    }
     Py_END_ALLOW_THREADS
-
+    
     if (timeout == 1) {
+        PyErr_Clear();
 #ifdef MS_WINDOWS
-        return WSAEWOULDBLOCK;
+        errval = WSAEWOULDBLOCK;
 #else
-        return EWOULDBLOCK;
+        errval = EWOULDBLOCK;
 #endif /* MS_WINDOWS */
+        goto finally;
     }
     END_SELECT_LOOP(s)
-
+    
     if (newfd == INVALID_SOCKET)
-        return s->errorhandler();
+    {
+#ifdef MS_WINDOWS
+        if(WSAEWOULDBLOCK == WSAGetLastError())
+        {
+            errval = WSAEWOULDBLOCK;
+        }
+#else
+        if(EWOULDBLOCK == errno)
+        {
+            errval = EWOULDBLOCK;
+        }
+#endif /* MS_WINDOWS */
+        else
+        {
+            return s->errorhandler();
+        }
 
+        goto finally;
+    }
+ 
     /* Create the new object with unspecified family,
        to avoid calls to bind() etc. on it. */
     sock = (PyObject *) new_sockobject(newfd,
                                        s->sock_family,
                                        s->sock_type,
                                        s->sock_proto);
-
+    
     if (sock == NULL) {
         SOCKETCLOSE(newfd);
         goto finally;
     }
+
     addr = makesockaddr(s->sock_fd, SAS2SA(&addrbuf),
                         addrlen, s->sock_proto);
     if (addr == NULL)
+    {
         goto finally;
-
-    res = 0;
+    }
+    
+    errval = 0;
 
 finally:
+    if (NULL == sock)
+    {
+        sock = Py_None;
+    }
+
+    if (NULL == addr)
+    {
+        addr = Py_None;
+    }
+
+    res = PyTuple_Pack(3, sock, addr, PyInt_FromLong(errval));
+    Py_XDECREF(sock);
+    Py_XDECREF(addr);
     return res;
 }
 
 PyDoc_STRVAR(acceptEx_doc,
-"acceptEx(sock, addr) -> errno\n\
+"acceptEx() -> sock, addr, errno\n\
 \n\
-Wait for an incoming connection.  Return an errno value if an exception occurred\n\
-and fill the given sock with a new socket representing the connection,\n\
-and addr with the address of the client.  For IP sockets, the address\n\
-info is a pair (hostaddr, port).\n\
-Currently only errno.EWOULDBLOCK is returned, any other error value raises an exception.\n\
+Wait for an incoming connection. Errno is set to EWOULDBLOCK/WSAEWOULDBLOCK if the socket\n\
+is blocking, -1 if an undefined error occured and 0 on success. All other errors will raise an exception.\n\
+'sock' is a new socket representing the connection and 'addr' is the address of the client.\n\
+For IP sockets, the adress info is a pair (hostaddr, port). If the errno isn't 0, 'addr' and\n\
+'sock' will be returned as None.\n\
 Instead of handling errno.EWOULDBLOCK in a try except block like in the regular\n\
 accept, the user will have to check errno when the function exits.");
 
@@ -3138,7 +3177,7 @@ SIO_KEEPALIVE_VALS:  'option' is a tuple of (onoff, timeout, interval).");
 static PyMethodDef sock_methods[] = {
     {"accept",            (PyCFunction)sock_accept, METH_NOARGS,
                       accept_doc},
-    {"acceptEx",        (PyCFunction)sock_acceptEx, METH_VARARGS,
+    {"acceptEx",        (PyCFunction)sock_acceptEx, METH_NOARGS,
                       acceptEx_doc},                      
     {"bind",              (PyCFunction)sock_bind, METH_O,
                       bind_doc},
