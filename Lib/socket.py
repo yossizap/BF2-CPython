@@ -207,8 +207,8 @@ class _socketobject(object):
         return _socketobject(_sock=sock), addr
     accept.__doc__ = _realsocket.accept.__doc__
     
-    def acceptEx(self, sock, addr):
-        return self._sock.acceptEx(sock, addr)
+    def acceptEx(self):
+        return self._sock.acceptEx()
     acceptEx.__doc__ = _realsocket.acceptEx.__doc__
 
     def dup(self):
