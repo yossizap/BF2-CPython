@@ -281,6 +281,7 @@
     <ClCompile Include="..\Modules\_io\textio.c" />
     <ClCompile Include="..\Modules\socketmodule.c" />
     <ClCompile Include="..\Modules\selectmodule.c" />
+    <ClCompile Include="..\Modules\_realitycore.c" />
     <ClCompile Include="..\Objects\abstract.c" />
     <ClCompile Include="..\Objects\boolobject.c" />
     <ClCompile Include="..\Objects\bufferobject.c" />

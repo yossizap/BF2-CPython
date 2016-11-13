@@ -69,6 +69,7 @@ extern void init_ast(void);
 extern void init_io(void);
 extern void init_socket(void);
 extern void initselect(void);
+extern void init_realitycore(void);
 extern void _PyWarnings_Init(void);
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
@@ -169,6 +170,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"_socket", init_socket},
     {"select", initselect},
 
+    /* Custom PR modules */
+    {"_realitycore", init_realitycore},
+    
     /* Sentinel */
     {0, 0}
 };

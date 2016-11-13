@@ -185,6 +185,7 @@ else:
     import thread
     import msvcrt
     import _subprocess
+    import subprocess
     import time
 
     from _multiprocessing import win32, Connection, PipeConnection
@@ -257,9 +258,22 @@ else:
             # start process
             cmd = get_command_line() + [rhandle]
             cmd = ' '.join('"%s"' % x for x in cmd)
+            si = subprocess.STARTUPINFO()
+            si.dwFlags = subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW
+            si.wShowWindow = subprocess.SW_HIDE
+            
+            # The new process has a new console, instead of inheriting its parent's console (the default). 
+            CREATE_NEW_CONSOLE = 0x00000010
+            # For console processes, the new process does not inherit its parent's console (the default). 
+            # The new process can call the AllocConsole function at a later time to create a console. 
+            DETACHED_PROCESS = 0x00000008
+            # The process is a console application that is being run without a console window. 
+            # Therefore, the console handle for the application is not set.
+            CREATE_NO_WINDOW = 0x08000000
             hp, ht, pid, tid = _subprocess.CreateProcess(
-                _python_exe, cmd, None, None, 1, 0, None, None, None
-                )
+                _python_exe, cmd, None, None, 1, DETACHED_PROCESS | CREATE_NO_WINDOW, None, None, si
+            )
+
             ht.Close()
             close(rhandle)
 

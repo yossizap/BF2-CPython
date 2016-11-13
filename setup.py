@@ -582,6 +582,9 @@ class PyBuildExt(build_ext):
         # Some modules that are normally always on:
         #exts.append( Extension('_weakref', ['_weakref.c']) )
 
+        # Project reality core functions
+        exts.append( Extension('_realitycore', ['_realitycore.c']))
+
         # array objects
         exts.append( Extension('array', ['arraymodule.c']) )
 

@@ -1878,11 +1878,13 @@ finally:
     if (NULL == sock)
     {
         sock = Py_None;
+        Py_INCREF(Py_None);
     }
 
     if (NULL == addr)
     {
         addr = Py_None;
+        Py_INCREF(Py_None);
     }
 
     res = PyTuple_Pack(3, sock, addr, PyInt_FromLong(errval));
