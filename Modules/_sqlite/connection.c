@@ -1189,7 +1189,7 @@ PyObject* pysqlite_connection_call(pysqlite_Connection* self, PyObject* args, Py
         return NULL;
     }
 
-    if (!_PyArg_NoKeywords(MODULE_NAME ".Connection()", kwargs))
+    if (!_PyArg_NoKeywords(SQLITE3_MODULE_NAME ".Connection()", kwargs))
         return NULL;
 
     if (!PyArg_ParseTuple(args, "O", &sql)) {
@@ -1424,7 +1424,7 @@ pysqlite_connection_iterdump(pysqlite_Connection* self, PyObject* args)
         goto finally;
     }
 
-    module = PyImport_ImportModule(MODULE_NAME ".dump");
+    module = PyImport_ImportModule(SQLITE3_MODULE_NAME ".dump");
     if (!module) {
         goto finally;
     }
@@ -1635,7 +1635,7 @@ static struct PyMemberDef connection_members[] =
 
 PyTypeObject pysqlite_ConnectionType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        MODULE_NAME ".Connection",                      /* tp_name */
+        SQLITE3_MODULE_NAME ".Connection",                      /* tp_name */
         sizeof(pysqlite_Connection),                    /* tp_basicsize */
         0,                                              /* tp_itemsize */
         (destructor)pysqlite_connection_dealloc,        /* tp_dealloc */

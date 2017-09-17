@@ -502,7 +502,7 @@ static int pysqlite_check_remaining_sql(const char* tail)
 
 PyTypeObject pysqlite_StatementType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        MODULE_NAME ".Statement",                       /* tp_name */
+        SQLITE3_MODULE_NAME ".Statement",                       /* tp_name */
         sizeof(pysqlite_Statement),                     /* tp_basicsize */
         0,                                              /* tp_itemsize */
         (destructor)pysqlite_statement_dealloc,         /* tp_dealloc */

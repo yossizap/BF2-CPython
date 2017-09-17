@@ -49,3 +49,9 @@ tags
 coverage/
 externals/
 htmlcov/
+*.obj
+*.tlog
+*.pdb
+*.lastbuildstate
+*.manifest
+*.unsuccessfulbuild

@@ -235,7 +235,7 @@ static PyMethodDef pysqlite_row_methods[] = {
 
 PyTypeObject pysqlite_RowType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        MODULE_NAME ".Row",                             /* tp_name */
+        SQLITE3_MODULE_NAME ".Row",                             /* tp_name */
         sizeof(pysqlite_Row),                           /* tp_basicsize */
         0,                                              /* tp_itemsize */
         (destructor)pysqlite_row_dealloc,               /* tp_dealloc */

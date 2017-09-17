@@ -1070,7 +1070,7 @@ PyDoc_STR("SQLite database cursor class.");
 
 PyTypeObject pysqlite_CursorType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        MODULE_NAME ".Cursor",                          /* tp_name */
+        SQLITE3_MODULE_NAME ".Cursor",                          /* tp_name */
         sizeof(pysqlite_Cursor),                        /* tp_basicsize */
         0,                                              /* tp_itemsize */
         (destructor)pysqlite_cursor_dealloc,            /* tp_dealloc */

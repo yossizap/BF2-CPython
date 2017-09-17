@@ -69,6 +69,8 @@ extern void init_ast(void);
 extern void init_io(void);
 extern void init_socket(void);
 extern void initselect(void);
+extern void init_ctypes(void);
+extern void init_sqlite3(void);
 extern void _PyWarnings_Init(void);
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
@@ -168,7 +170,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"_io", init_io},
     {"_socket", init_socket},
     {"select", initselect},
-
+    {"_ctypes", init_ctypes},
+    {"_sqlite3", init_sqlite3},
+    
     /* Sentinel */
     {0, 0}
 };

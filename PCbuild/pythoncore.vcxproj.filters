@@ -13,8 +13,23 @@
     <Filter Include="Modules\zlib">
       <UniqueIdentifier>{5d6d2d6c-9e61-4a1d-b0b2-5cc2f446d69e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Modules\_ctypes">
+          <UniqueIdentifier>{dbdea1f2-ad8b-44ca-b782-fcf65d91559b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Modules\cjkcodecs">
       <UniqueIdentifier>{9f12c4b1-322e-431e-abf1-e02550f50032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ctypeHeaders">
+      <UniqueIdentifier>{806081ee-2af0-48d0-a83e-ee02a74baa0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ctypeSources">
+      <UniqueIdentifier>{dbdea1f2-ad8b-44ca-b782-fcf65d91559b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sqliteHeaders">
+      <UniqueIdentifier>{ce5b649d-a6f7-4459-9425-c883795d79df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sqliteSources">
+      <UniqueIdentifier>{0e842fe2-176b-4e83-9d1f-0ad13a859efd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects">
       <UniqueIdentifier>{ab29a558-143d-4fe7-a039-b431fb429856}</UniqueIdentifier>
@@ -375,10 +390,40 @@
     <ClInclude Include="..\Modules\_io\_iomodule.h">
       <Filter>Modules\_io</Filter>
     </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\ctypes.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\ctypes_dlfcn.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+        <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi_common.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\libffi_msvc\fficonfig.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffitarget.h">
+      <Filter>ctypeHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(sqlite3Dir)\sqlite3.h">
+      <Filter>sqliteHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(sqlite3Dir)\sqlite3ext.h">
+      <Filter>sqliteHeaders</Filter>
+    </ClInclude>
     <ClInclude Include="..\Modules\socketmodule.c">
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\Modules\selectmodule.c">
+      <Filter>Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Modules\_realitycore.c">
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\Objects\stringlib\count.h">
@@ -419,6 +464,36 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(sqlite3Dir)\sqlite3.c">
+      <Filter>sqliteSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\_ctypes.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\callbacks.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\callproc.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\cfield.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\libffi_msvc\ffi.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\malloc_closure.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\libffi_msvc\prep_cif.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\stgdict.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\libffi_msvc\win32.c">
+      <Filter>ctypeSources</Filter>
+    </ClCompile>
     <ClCompile Include="..\Modules\_bisectmodule.c">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -955,5 +1030,8 @@
     <ResourceCompile Include="..\PC\python_nt.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+    <CustomBuild Include="..\Modules\_ctypes\libffi_msvc\win64.asm">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
