@@ -1,6 +1,6 @@
 # BF2 CPython
 
-This repository was created to replace DICE's py_dice.dll/.so with a newer version of CPython. The CPython lib that DICE provided uses Python 2.3.4 with minimal functionality(no threading, multiprocessing, os and sys are limited, etc.) which limits mod developers.
+This repository was created to replace DICE's py_dice.dll/.so with a newer version of CPython. The CPython lib that DICE provided uses Python 2.3.4 with minimal functionality(no threading, multiprocessing, os and sys are limited, can't load .pyd files etc.) which limits mod developers.
 
 This type of upgrade was [previously done](https://blog.garethj.com/2008/05/07/replacing-python-on-a-battlefield-2-server) for 2.5.2 without any changes to the interpreter's implementation but it only worked on 32bit systems. Changes were required for the 32bit and 64bit versions of the python libraries to get BF2's embedded python modules to work with the newest 2.x python interpreter.
 
@@ -10,7 +10,7 @@ This version of the BF2 CPython adaptation was created with a fork of the 2.7.12
 ## Building and replacing libdice_py
 
 ### Adding external modules as builtins
-Some of the modules in `Modules/` are compiled as external libs - .pyd files. For some reason, which requires further investigation, BF2 crashes when trying to import .pyd files in windows so any external modules that you would like to include should be added as builtin modules in the python .dll.
+Some of the modules in `Modules/` are compiled as external libs - .pyd files. ~For some reason, which requires further investigation, BF2 crashes when trying to import .pyd files in windows so any external modules that you would like to include should be added as builtin modules in the python .dll.~ I have fixed this issue but it's still good to know how it's done to keep your mod files to a minimum and prevent users from tampering with them.
 
 ###### Windows
 To include modules in windows you'll need to add their init function to `PC\config.c` and add their path to the `pythoncore.vcxproj`+`pythoncore.vcxproj.filter` files. I have already done this in the `bf2-2.7` branch for the `_socket` module since it's required by `socket.py` that bf2 uses, take a look at [c364cee](https://github.com/yossizap/BF2-CPython/commit/c364cee33a30164fc8a5f436a496279f6881734d) and [ddcf99e](https://github.com/yossizap/BF2-CPython/commit/ddcf99e3b8ea419330c8a2b690d13744abdcf633) as examples. You can also do the opposite to remove builtin modules that you don't need. 
