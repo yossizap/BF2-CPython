@@ -55,3 +55,7 @@ htmlcov/
 *.lastbuildstate
 *.manifest
 *.unsuccessfulbuild
+*.log
+*.cache
+*.ilk
+*.res

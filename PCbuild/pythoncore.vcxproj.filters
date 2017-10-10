@@ -14,7 +14,7 @@
       <UniqueIdentifier>{5d6d2d6c-9e61-4a1d-b0b2-5cc2f446d69e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Modules\_ctypes">
-          <UniqueIdentifier>{dbdea1f2-ad8b-44ca-b782-fcf65d91559b}</UniqueIdentifier>
+      <UniqueIdentifier>{dbdea1f2-ad8b-44ca-b782-fcf65d91559b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Modules\cjkcodecs">
       <UniqueIdentifier>{9f12c4b1-322e-431e-abf1-e02550f50032}</UniqueIdentifier>
@@ -399,7 +399,7 @@
     <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi.h">
       <Filter>ctypeHeaders</Filter>
     </ClInclude>
-        <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi.h">
+    <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi.h">
       <Filter>ctypeHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffi_common.h">
@@ -410,21 +410,6 @@
     </ClInclude>
     <ClInclude Include="..\Modules\_ctypes\libffi_msvc\ffitarget.h">
       <Filter>ctypeHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="$(sqlite3Dir)\sqlite3.h">
-      <Filter>sqliteHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="$(sqlite3Dir)\sqlite3ext.h">
-      <Filter>sqliteHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Modules\socketmodule.c">
-      <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Modules\selectmodule.c">
-      <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Modules\_realitycore.c">
-      <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\Objects\stringlib\count.h">
       <Filter>Objects</Filter>
@@ -462,11 +447,20 @@
     <ClInclude Include="..\Python\thread_nt.h">
       <Filter>Python</Filter>
     </ClInclude>
+    <ClInclude Include="..\Modules\_ctypes\_ctypes_test.h" />
+    <ClInclude Include="..\Modules\_sqlite\cache.h" />
+    <ClInclude Include="..\Modules\_sqlite\connection.h" />
+    <ClInclude Include="..\Modules\_sqlite\cursor.h" />
+    <ClInclude Include="..\Modules\_sqlite\microprotocols.h" />
+    <ClInclude Include="..\Modules\_sqlite\module.h" />
+    <ClInclude Include="..\Modules\_sqlite\prepare_protocol.h" />
+    <ClInclude Include="..\Modules\_sqlite\row.h" />
+    <ClInclude Include="..\Modules\_sqlite\sqlitecompat.h" />
+    <ClInclude Include="..\Modules\_sqlite\statement.h" />
+    <ClInclude Include="..\Modules\_sqlite\util.h" />
+    <ClInclude Include="..\PC\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(sqlite3Dir)\sqlite3.c">
-      <Filter>sqliteSources</Filter>
-    </ClCompile>
     <ClCompile Include="..\Modules\_ctypes\_ctypes.c">
       <Filter>ctypeSources</Filter>
     </ClCompile>
@@ -1025,13 +1019,22 @@
     <ClCompile Include="..\Python\traceback.c">
       <Filter>Python</Filter>
     </ClCompile>
+    <ClCompile Include="..\Modules\_ctypes\_ctypes_test.c" />
+    <ClCompile Include="..\Modules\_sqlite\cache.c" />
+    <ClCompile Include="..\Modules\_sqlite\connection.c" />
+    <ClCompile Include="..\Modules\_sqlite\cursor.c" />
+    <ClCompile Include="..\Modules\_sqlite\microprotocols.c" />
+    <ClCompile Include="..\Modules\_sqlite\module.c" />
+    <ClCompile Include="..\Modules\_sqlite\prepare_protocol.c" />
+    <ClCompile Include="..\Modules\_sqlite\row.c" />
+    <ClCompile Include="..\Modules\_sqlite\statement.c" />
+    <ClCompile Include="..\Modules\_sqlite\util.c" />
+    <ClCompile Include="..\Modules\socketmodule.c" />
+    <ClCompile Include="..\Modules\selectmodule.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\PC\python_nt.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <CustomBuild Include="..\Modules\_ctypes\libffi_msvc\win64.asm">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>

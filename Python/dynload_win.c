@@ -249,11 +249,10 @@ dl_funcptr _PyImport_GetDynLoadFunc(const char *fqname, const char *shortname,
             char buffer[256];
 
 #ifdef _DEBUG
-            PyOS_snprintf(buffer, sizeof(buffer), "python%d%d_d.dll",
+            PyOS_snprintf(buffer, sizeof(buffer), "dice_py_d.dll");
 #else
-            PyOS_snprintf(buffer, sizeof(buffer), "python%d%d.dll",
+            PyOS_snprintf(buffer, sizeof(buffer), "dice_py.dll");
 #endif
-                          PY_MAJOR_VERSION,PY_MINOR_VERSION);
             import_python = GetPythonImport(hDLL);
 
             if (import_python &&
