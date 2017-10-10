@@ -199,6 +199,7 @@
     <ClInclude Include="..\Parser\tokenizer.h" />
     <ClInclude Include="..\PC\errmap.h" />
     <ClInclude Include="..\PC\pyconfig.h" />
+    <ClInclude Include="..\PC\resource.h" />
     <ClInclude Include="..\Python\importdl.h" />
     <ClInclude Include="..\Python\thread_nt.h" />
     <ClInclude Include="..\Modules\_ctypes\ctypes.h" />
@@ -305,7 +306,7 @@
     <ClCompile Include="..\Modules\_ctypes\libffi_msvc\prep_cif.c" />
     <ClCompile Include="..\Modules\_ctypes\stgdict.c" />
     <ClCompile Include="..\Modules\_ctypes\libffi_msvc\win32.c">
-          <ExcludedFromBuild Condition="'$(Platform)'=='x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Platform)'=='x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Modules\_ctypes\_ctypes_test.c" />
     <ClCompile Include="..\Modules\_sqlite\cache.c" />
