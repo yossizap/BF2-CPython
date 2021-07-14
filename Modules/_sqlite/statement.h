@@ -30,6 +30,8 @@
 
 #define PYSQLITE_TOO_MUCH_SQL (-100)
 #define PYSQLITE_SQL_WRONG_TYPE (-101)
+#define _PyAnyInt_CheckExact(op) (PyInt_CheckExact(op) || PyLong_CheckExact(op))
+
 
 typedef struct
 {

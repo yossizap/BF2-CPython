@@ -74,8 +74,9 @@ int pysqlite_statement_create(pysqlite_Statement* self, pysqlite_Connection* con
         rc = PYSQLITE_SQL_WRONG_TYPE;
         return rc;
     }
-    sql_cstr = PyString_AsString(sql_str);
+    sql_cstr = PyString_AS_STRING(sql_str);
     if (strlen(sql_cstr) != (size_t)PyString_GET_SIZE(sql_str)) {
+        Py_DECREF(sql_str);
         PyErr_SetString(PyExc_ValueError, "the query contains a null character");
         return PYSQLITE_SQL_WRONG_TYPE;
     }
@@ -204,7 +205,7 @@ static int _need_adapt(PyObject* obj)
         return 1;
     }
 
-    if (PyInt_CheckExact(obj) || PyLong_CheckExact(obj)
+    if (_PyAnyInt_CheckExact(obj)
             || PyFloat_CheckExact(obj) || PyString_CheckExact(obj)
             || PyUnicode_CheckExact(obj) || PyBuffer_Check(obj)) {
         return 0;
@@ -411,11 +412,9 @@ void pysqlite_statement_mark_dirty(pysqlite_Statement* self)
 
 void pysqlite_statement_dealloc(pysqlite_Statement* self)
 {
-    int rc;
-
     if (self->st) {
         Py_BEGIN_ALLOW_THREADS
-        rc = sqlite3_finalize(self->st);
+        sqlite3_finalize(self->st);
         Py_END_ALLOW_THREADS
     }
 
@@ -502,7 +501,7 @@ static int pysqlite_check_remaining_sql(const char* tail)
 
 PyTypeObject pysqlite_StatementType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        SQLITE3_MODULE_NAME ".Statement",                       /* tp_name */
+        MODULE_NAME ".Statement",                       /* tp_name */
         sizeof(pysqlite_Statement),                     /* tp_basicsize */
         0,                                              /* tp_itemsize */
         (destructor)pysqlite_statement_dealloc,         /* tp_dealloc */
