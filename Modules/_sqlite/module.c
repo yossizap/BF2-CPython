@@ -39,8 +39,8 @@ PyObject* pysqlite_Error, *pysqlite_Warning, *pysqlite_InterfaceError, *pysqlite
     *pysqlite_InternalError, *pysqlite_OperationalError, *pysqlite_ProgrammingError,
     *pysqlite_IntegrityError, *pysqlite_DataError, *pysqlite_NotSupportedError, *pysqlite_OptimizedUnicode;
 
-PyObject* converters;
-int _enable_callback_tracebacks;
+PyObject* _pysqlite_converters;
+int _pysqlite_enable_callback_tracebacks;
 int pysqlite_BaseTypeAdapted;
 
 static PyObject* module_connect(PyObject* self, PyObject* args, PyObject*
@@ -190,7 +190,7 @@ static PyObject* module_register_converter(PyObject* self, PyObject* args)
         goto error;
     }
 
-    if (PyDict_SetItem(converters, name, callable) != 0) {
+    if (PyDict_SetItem(_pysqlite_converters, name, callable) != 0) {
         goto error;
     }
 
@@ -208,7 +208,7 @@ Registers a converter with pysqlite. Non-standard.");
 
 static PyObject* enable_callback_tracebacks(PyObject* self, PyObject* args)
 {
-    if (!PyArg_ParseTuple(args, "i", &_enable_callback_tracebacks)) {
+    if (!PyArg_ParseTuple(args, "i", &_pysqlite_enable_callback_tracebacks)) {
         return NULL;
     }
 
@@ -223,12 +223,12 @@ Enable or disable callback functions throwing errors to stderr.");
 
 static void converters_init(PyObject* dict)
 {
-    converters = PyDict_New();
-    if (!converters) {
+    _pysqlite_converters = PyDict_New();
+    if (!_pysqlite_converters) {
         return;
     }
 
-    PyDict_SetItemString(dict, "converters", converters);
+    PyDict_SetItemString(dict, "converters", _pysqlite_converters);
 }
 
 static PyMethodDef module_methods[] = {
@@ -338,56 +338,56 @@ PyMODINIT_FUNC init_sqlite3(void)
 
     /*** Create DB-API Exception hierarchy */
 
-    if (!(pysqlite_Error = PyErr_NewException(SQLITE3_MODULE_NAME ".Error", PyExc_StandardError, NULL))) {
+    if (!(pysqlite_Error = PyErr_NewException(MODULE_NAME ".Error", PyExc_StandardError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "Error", pysqlite_Error);
 
-    if (!(pysqlite_Warning = PyErr_NewException(SQLITE3_MODULE_NAME ".Warning", PyExc_StandardError, NULL))) {
+    if (!(pysqlite_Warning = PyErr_NewException(MODULE_NAME ".Warning", PyExc_StandardError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "Warning", pysqlite_Warning);
 
     /* Error subclasses */
 
-    if (!(pysqlite_InterfaceError = PyErr_NewException(SQLITE3_MODULE_NAME ".InterfaceError", pysqlite_Error, NULL))) {
+    if (!(pysqlite_InterfaceError = PyErr_NewException(MODULE_NAME ".InterfaceError", pysqlite_Error, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "InterfaceError", pysqlite_InterfaceError);
 
-    if (!(pysqlite_DatabaseError = PyErr_NewException(SQLITE3_MODULE_NAME ".DatabaseError", pysqlite_Error, NULL))) {
+    if (!(pysqlite_DatabaseError = PyErr_NewException(MODULE_NAME ".DatabaseError", pysqlite_Error, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "DatabaseError", pysqlite_DatabaseError);
 
     /* pysqlite_DatabaseError subclasses */
 
-    if (!(pysqlite_InternalError = PyErr_NewException(SQLITE3_MODULE_NAME ".InternalError", pysqlite_DatabaseError, NULL))) {
+    if (!(pysqlite_InternalError = PyErr_NewException(MODULE_NAME ".InternalError", pysqlite_DatabaseError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "InternalError", pysqlite_InternalError);
 
-    if (!(pysqlite_OperationalError = PyErr_NewException(SQLITE3_MODULE_NAME ".OperationalError", pysqlite_DatabaseError, NULL))) {
+    if (!(pysqlite_OperationalError = PyErr_NewException(MODULE_NAME ".OperationalError", pysqlite_DatabaseError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "OperationalError", pysqlite_OperationalError);
 
-    if (!(pysqlite_ProgrammingError = PyErr_NewException(SQLITE3_MODULE_NAME ".ProgrammingError", pysqlite_DatabaseError, NULL))) {
+    if (!(pysqlite_ProgrammingError = PyErr_NewException(MODULE_NAME ".ProgrammingError", pysqlite_DatabaseError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "ProgrammingError", pysqlite_ProgrammingError);
 
-    if (!(pysqlite_IntegrityError = PyErr_NewException(SQLITE3_MODULE_NAME ".IntegrityError", pysqlite_DatabaseError,NULL))) {
+    if (!(pysqlite_IntegrityError = PyErr_NewException(MODULE_NAME ".IntegrityError", pysqlite_DatabaseError,NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "IntegrityError", pysqlite_IntegrityError);
 
-    if (!(pysqlite_DataError = PyErr_NewException(SQLITE3_MODULE_NAME ".DataError", pysqlite_DatabaseError, NULL))) {
+    if (!(pysqlite_DataError = PyErr_NewException(MODULE_NAME ".DataError", pysqlite_DatabaseError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "DataError", pysqlite_DataError);
 
-    if (!(pysqlite_NotSupportedError = PyErr_NewException(SQLITE3_MODULE_NAME ".NotSupportedError", pysqlite_DatabaseError, NULL))) {
+    if (!(pysqlite_NotSupportedError = PyErr_NewException(MODULE_NAME ".NotSupportedError", pysqlite_DatabaseError, NULL))) {
         goto error;
     }
     PyDict_SetItemString(dict, "NotSupportedError", pysqlite_NotSupportedError);
@@ -428,7 +428,7 @@ PyMODINIT_FUNC init_sqlite3(void)
     /* initialize the default converters */
     converters_init(dict);
 
-    _enable_callback_tracebacks = 0;
+    _pysqlite_enable_callback_tracebacks = 0;
 
     pysqlite_BaseTypeAdapted = 0;
 
@@ -452,6 +452,6 @@ PyMODINIT_FUNC init_sqlite3(void)
 error:
     if (PyErr_Occurred())
     {
-        PyErr_SetString(PyExc_ImportError, SQLITE3_MODULE_NAME ": init failed");
+        PyErr_SetString(PyExc_ImportError, MODULE_NAME ": init failed");
     }
 }
